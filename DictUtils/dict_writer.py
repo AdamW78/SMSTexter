@@ -10,7 +10,7 @@ def write(dictionary, filename):
     :raises IOError: If writing to the CSV file fails, raise an IOError
     """
     csv_columns = ["Cell Carrier", "Email 1", "Email 2", "Email 3", "Email 4", "Email 5", "Email 6"]
-    csv_file = filename + ".csv"
+    csv_file = "DictUtils/" + filename + ".csv"
     try:
         with open(csv_file, 'w') as csvfile:
             writer = csv.writer(csvfile)

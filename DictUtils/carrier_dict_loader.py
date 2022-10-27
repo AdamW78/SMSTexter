@@ -1,18 +1,17 @@
-import requests
-import Constants
-from SMSTexter import DictChecker, DictReader
 import csv
+import requests
+import constants
+from DictUtils import dict_checker, dict_reader
 
 
 def fetch_carrier_dictionary_local() -> dict:
-    carrier_dict_file = DictChecker.has_csv_dict()
-    cr = csv
-    return DictReader.read(carrier_dict_file)
+    carrier_dict_file = dict_checker.has_csv_dict()
+    return dict_reader.read(carrier_dict_file)
 
 
 def fetch_carrier_dictionary() -> dict:
     # Fetch dictionary of cell carriers from GitHub
-    response = requests.get(Constants.CARRIER_DICT_URL)
+    response = requests.get(constants.CARRIER_DICT_URL)
     # Create list object line-by-line from remote dictionary file
     lines = list(response.iter_lines())
     #
@@ -28,7 +27,7 @@ def fetch_carrier_dictionary() -> dict:
 
 
 def carrier_dictionary():
-    if Constants.DEBUG or (DictChecker.has_csv_dict() == ""):
+    if constants.DEBUG or (dict_checker.has_csv_dict() == ""):
         _carrier_dictionary = fetch_carrier_dictionary()
     else:
         return fetch_carrier_dictionary_local()

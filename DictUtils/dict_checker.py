@@ -2,9 +2,6 @@ from os import listdir
 from os.path import isfile
 from csv import reader
 
-from SMSTexter import Constants
-
-csv_dict_filename = ""
 
 def is_csv_dict(filename) -> bool:
     """
@@ -29,12 +26,10 @@ def has_csv_dict() -> str:
     """
     Checks whether user has already written a CSV file from cell carrier dictionary
 
-    :return: Boolean value for whether user has cell carrier dictionary stored locally
+    :return: string file where carrrier-dict.csv is found
     """
-    files = [f for f in listdir('') if isfile(f)]
-    for file in files:
-        if is_csv_dict(file):
-            global csv_dict_filename
-            csv_dict_filename = file
-            return file
+    files = [f for f in listdir('DictUtils') if isfile(f)]
+    for f in files:
+        if is_csv_dict(f):
+            return "DictUtils/" + f
     return ""

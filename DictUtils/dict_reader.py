@@ -1,5 +1,4 @@
 import csv
-from typing import Iterable
 
 
 def read(filename: str) -> dict:
