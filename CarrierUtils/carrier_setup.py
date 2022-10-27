@@ -1,6 +1,6 @@
 import sys
 from time import sleep
-import find_cell_carrier
+from CarrierUtils import find_cell_carrier
 import difflib
 
 
@@ -36,8 +36,8 @@ def __search_carriers(phone_number: str, carrier_dictionary: dict) -> str or lis
             # Use the built-in set .intersection() method to return values in BOTH sets
             # word_matches is the new set return by this method
             word_matches = key_words.intersection(user_carrier_words)
-            # Checks that word_matches is  NOT the null set and that it is NOT a set just containing "Wireless"
-            if (word_matches != {}) and (word_matches != {'Wireless'}):
+            # Checks that word_matches is NOT the null set and that it is NOT a set just containing "Wireless"
+            if (word_matches != set()) and (word_matches != {'Wireless'}):
                 # If true, check our current cell carrier string (key) to see if it contains "Wireless" or "PCS"
                 if key.find('PCS') != -1 or key.find('Wireless') != -1:
                     # If our current cell carrier string contains one of these, it is most likely
@@ -74,9 +74,9 @@ def setup(phone_number: str, carrier_dictionary: dict) -> str:
         # Getting user's carrier selection from carrier_list can raise multiple exception
         # Surrounded with try-except statement
         try:
-            # Return the selected carrier from get_carrier_selection
-            return get_carrier_selection(carrier_list)
-        # get_carrier_selection(carrier_list) can raise ValueError, IndexError, or TypeError
+            # Return the selected carrier from __get_carrier_selection
+            return __get_carrier_selection(carrier_list)
+        # __get_carrier_selection(carrier_list) can raise ValueError, IndexError, or TypeError
         except ValueError or IndexError or TypeError:
             # Create exception string
             es = "Carrier setup was unsuccessful for " + phone_number + "."
@@ -84,58 +84,58 @@ def setup(phone_number: str, carrier_dictionary: dict) -> str:
             raise Exception(es)
 
 
-def get_carrier_selection(close_matches: list) -> str:
-        """
-        Takes in a list of close matches for a cell carrier and gets the user to select the one they would like to text
+def __get_carrier_selection(close_matches: list) -> str:
+    """
+    Takes in a list of close matches for a cell carrier and gets the user to select the one they would like to text
 
-        :param close_matches: List of close matches returned from search_carriers() - list of strings
-        :return: User carrier selection as string
-        :raises TypeError Asks for a numerical input choice, this is raised if the input (string)
-         cannot be converted to an int (usually means user did not input a number)
-        :raises IndexError If the numerical input provided is out of bounds of list of options provided, this is raised
-        :raises ValueError Asks for a yes/no user input, raised if user input is NOT: "Y"/"y" or "N"/"n"
-        :
-        """
-        # Method is only called when automated carrier search fails
-        # Send messages to user to notify them of what is going on
-        print("We're having some trouble determining your cell carrier in our databases...")
-        print("Is one of the below your cell carrier?")
-        # Iterate through each cell carrier string in close_matches
-        for i in range(len(close_matches)):
-            # Check if we are on the first iteration of the loop
-            if i == 0:
-                # Print the closest cell carrier match found
-                print(f"Closest match was: \"{close_matches[0]}\"")
-            # Every other iteration of the loop besides the first one
-            else:
-                # Print the next closest cell carrier match
-                print(f"Next closest match was: \"{close_matches[i]}\"")
-        # Get input from user - was one of the printed cell carrier's theirs?
-        yes_no = input("Is one of these correct? Yes/No)").casefold()
-        # Check if input received was no
-        if yes_no == "n" or yes_no == "no":
-            # Exit the program
-            print("Unable to find your cell carrier. Exiting...")
-            sleep(3)
-            sys.exit(0)
-        # Check if input received was yes
-        elif yes_no == "y" or yes_no == "ye" or yes_no == "yes":
-            # Print matches as a numerical list
-            for k in range(len(close_matches)):
-                print(f"{k + 1}. {close_matches[k]}")
-            # Ask for numerical input from user selecting cell carrier from list
-            number_choice = input("Please select the number of your cell carrier: ")
-            num = int(number_choice)
-            # Check if user input is out of bounds
-            if num > len(close_matches) or num <= 0:
-                # Raise IndexError
-                print(f"Error: Input \"{number_choice}\" is not a listed carrier. Exiting...")
-                raise IndexError(f"User input \"{number_choice}\" was out of bounds for cell carrier list.")
-            else:
-                print(len(close_matches))
-                carrier_choice = close_matches[num - 1]
-                print(f"Chosen carrier: {carrier_choice}")
-                return carrier_choice
+    :param close_matches: List of close matches returned from __search_carriers() - list of strings
+    :return: User carrier selection as string
+    :raises TypeError Asks for a numerical input choice, this is raised if the input (string)
+    cannot be converted to an int (usually means user did not input a number)
+    :raises IndexError If the numerical input provided is out of bounds of list of options provided, this is raised
+    :raises ValueError Asks for a yes/no user input, raised if user input is NOT: "Y"/"y" or "N"/"n"
+    """
+    # Method is only called when automated carrier search fails
+    # Send messages to user to notify them of what is going on
+    print("We're having some trouble determining your cell carrier in our databases...")
+    print("Is one of the below your cell carrier?")
+    # Iterate through each cell carrier string in close_matches
+    for i in range(len(close_matches)):
+        # Check if we are on the first iteration of the loop
+        if i == 0:
+            # Print the closest cell carrier match found
+            print(f"Closest match was: \"{close_matches[0]}\"")
+        # Every other iteration of the loop besides the first one
         else:
-            print(f"Error: Input \"{yes_no}\" is invalid. Exiting...")
-            raise ValueError("User input \"{yes_no}\" was invalid. Please enter \"y\" or \"n\".")
+            # Print the next closest cell carrier match
+            print(f"Next closest match was: \"{close_matches[i]}\"")
+    # Get input from user - was one of the printed cell carrier's theirs?
+    yes_no = input("Is one of these correct? Yes/No)").casefold()
+    # Check if input received was no
+    if yes_no == "n" or yes_no == "no":
+        # Exit the program
+        print("Unable to find your cell carrier. Exiting...")
+        sleep(3)
+        sys.exit(0)
+    # Check if input received was yes
+    elif yes_no == "y" or yes_no == "ye" or yes_no == "yes":
+        # Print matches as a numerical list
+        for k in range(len(close_matches)):
+            print(f"{k + 1}. {close_matches[k]}")
+        # Ask for numerical input from user selecting cell carrier from list
+        number_choice = input("Please select the number of your cell carrier: ")
+        num = int(number_choice)
+        # Check if user input is out of bounds
+        if num > len(close_matches) or num <= 0:
+            # Raise IndexError
+            print(f"Error: Input \"{number_choice}\" is not a listed carrier. Exiting...")
+            raise IndexError(f"User input \"{number_choice}\" was out of bounds for cell carrier list.")
+        else:
+            # Fetch the user's choice from proper index in close_matches and return cell carrier string
+            carrier_choice = close_matches[num - 1]
+            print(f"Chosen carrier: {carrier_choice}")
+            return carrier_choice
+    # Input received was invalid
+    else:
+        print(f"Error: Input \"{yes_no}\" is invalid. Exiting...")
+        raise ValueError("User input \"{yes_no}\" was invalid. Please enter \"y\" or \"n\".")

@@ -2,8 +2,15 @@ import csv
 
 
 def read(filename: str) -> dict:
-    carrier_dictionary = dict()
-    with open('carrier-dict.csv', 'r', newline='\n') as csvfile:
+    """
+    Method to create dictionary object from carrier-dict.csv
+
+    :param filename: File to create dictionary object from
+    :return: Dictionary object created from contents of filename
+    """
+    # Create empty dictionary to append and return
+    carrier_dictionary = {}
+    with open(filename, 'r') as csvfile:
         for csv_row in csv.reader(csvfile, delimiter=','):
             # Skip useless lines of file (first 2)
             if csv_row[0] == '' or csv_row[0] == 'Cell Carrier':

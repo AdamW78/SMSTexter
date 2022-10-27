@@ -30,6 +30,6 @@ def has_csv_dict() -> str:
     """
     files = [f for f in listdir('DictUtils') if isfile(f)]
     for f in files:
-        if is_csv_dict(f):
+        if is_csv_dict("DictUtils/" + f):
             return "DictUtils/" + f
     return ""
