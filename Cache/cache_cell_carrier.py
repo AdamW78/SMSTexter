@@ -1,3 +1,6 @@
+"""
+Module used for caching phone numbers and updating local cache
+"""
 from os.path import exists
 import os
 import json
@@ -6,8 +9,9 @@ import constants
 
 def cache(phone_number: str, cell_carrier: str):
     """
-    Method used for locally caching phone numbers and their cell carriers to limit Twilio API requests
+    Method used for locally caching phone numbers and their cell carriers
 
+    The above is done to limit Twilio API requests
     :param phone_number: String phone number to cache
     :param cell_carrier: String cell carrier for the phone number to cache
     """
@@ -74,7 +78,7 @@ def __load_data(json_file: str) -> dict:
 
 def __write_data(json_file: str, data_dict: dict):
     """
-    Helper method used for writing a dict object to a json file to locally cache numbers and carriers
+    Helper method for writing a dict object to a json file to locally cache numbers and carriers
 
     :param json_file: String filename to which the dictionary parameter will be written as JSON
     :param data_dict: dict object containing phone numbers and their corresponding cell carriers
@@ -100,15 +104,13 @@ def is_cached(phone_number) -> str or int:
     if not cache_exists:
         return 0
     # If the local cache file has a size of 0 (empty file), return 1
-    elif os.stat(carrier_json).st_size == 0:
+    if os.stat(carrier_json).st_size == 0:
         return -1
     # Local cache exists and is not empty - load it into a dictionary object for checking
-    else:
-        data = __load_data(carrier_json)
-        # Check if the local cache contains the phone number
-        if (list(data.keys()).count(phone_number)) != 0:
-            # It does - return the cell carrier stored from the phone number
-            return data[phone_number]
-        # It does not contain the phone number - return -1
-        else:
-            return -1
+    data = __load_data(carrier_json)
+    # Check if the local cache contains the phone number
+    if (list(data.keys()).count(phone_number)) != 0:
+        # It does - return the cell carrier stored from the phone number
+        return data[phone_number]
+    # It does not contain the phone number - return -1
+    return -1
