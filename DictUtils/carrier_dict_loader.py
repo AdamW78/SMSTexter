@@ -24,7 +24,7 @@ def __fetch_carrier_dictionary() -> dict:
     :return: Dictionary file newly-stored locally
     """
     # Fetch dictionary of cell carriers from GitHub
-    response = requests.get(constants.CARRIER_DICT_URL)
+    response = requests.get(constants.CARRIER_DICT_URL, timeout=10)
     # Create list object line-by-line from remote dictionary file
     lines = list(response.iter_lines())
     # Iterate through all the lines in the dictionary and convert them to strings
