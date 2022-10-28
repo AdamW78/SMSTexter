@@ -5,13 +5,13 @@ import constants
 
 
 def cache(phone_number: str, cell_carrier: str):
-    carrier_json = constants.LOCAL_CACHE_PATH
     """
     Method used for locally caching phone numbers and their cell carriers to limit Twilio API requests
 
     :param phone_number: String phone number to cache
     :param cell_carrier: String cell carrier for the phone number to cache
     """
+    carrier_json = constants.LOCAL_CACHE_PATH
     # Check if the cache file does NOT exist:
     cache_result = is_cached(phone_number)
     if cache_result == 0:
@@ -65,7 +65,7 @@ def __load_data(json_file: str) -> dict:
     :return: dict object containing phone numbers and their cell carriers loaded from local cache
     """
     # Open the json_file parameter for reading using a with-open-as statement
-    with open(json_file, 'r') as jsonfile:
+    with open(json_file, 'r', encoding='UTF-8') as jsonfile:
         # Use the json.load() function to create a dictionary out of the local cache json file
         data = json.load(jsonfile)
     # Return the created dictionary
@@ -80,19 +80,19 @@ def __write_data(json_file: str, data_dict: dict):
     :param data_dict: dict object containing phone numbers and their corresponding cell carriers
     """
     # Open the json_file parameter for writing using a with-open-as statement
-    with open(json_file, 'w') as jsonfile:
+    with open(json_file, 'w', encoding='UTF-8') as jsonfile:
         # Write the data_dict parameter to the json_file parameter
         json.dump(data_dict, jsonfile)
 
 
 def is_cached(phone_number) -> str or int:
-    carrier_json = constants.LOCAL_CACHE_PATH
     """
     Method to check whether a phone number is already locally cached or not
 
     :param phone_number: String phone number to check local cache for
     :return: str cell_carrier if one is found or int -1 if one is not
     """
+    carrier_json = constants.LOCAL_CACHE_PATH
     if constants.DEBUG:
         print(f"Checking if phone number {phone_number} is cached:", end=' ')
     # If the local cache file does not exist, return 0
