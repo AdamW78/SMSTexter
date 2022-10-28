@@ -27,9 +27,6 @@ def __fetch_carrier_dictionary() -> dict:
     response = requests.get(constants.CARRIER_DICT_URL, timeout=10)
     # Create list object line-by-line from remote dictionary file
     lines = list(response.iter_lines())
-    # Iterate through all the lines in the dictionary and convert them to strings
-    for i in enumerate(lines):
-        lines[i] = str(lines[i])
     # Fetch path to dictionary file from constants
     dict_patch = constants.LOCAL_DICT_PATCH
     # Open dictionary file and write to it
@@ -37,6 +34,7 @@ def __fetch_carrier_dictionary() -> dict:
         writer = csv.writer(csvfile, delimiter=",")
         # Format each line and output to csv file
         for line in lines:
+            line = str(line)
             line = line[2:len(line)-1]
             write_list = line.split(',')
             writer.writerow(write_list)
