@@ -19,6 +19,7 @@ def is_csv_dict(filename) -> bool:
             csv_file_list = list(csv_reader)
             headers = csv_file_list[0]
             return 'Cell Carrier' in headers
+    return False
 
 
 def has_csv_dict() -> str:

@@ -87,7 +87,7 @@ class SMSTexter:
         # Check if using multiple phone numbers
         if self.multi:
             # If true, iterate through every supplied phone number
-            for number in range(len(self.phone_number)):
+            for number in enumerate(self.phone_number):
                 # Send text to phone number using helper method
                 self.__text_to_email_send(self.phone_number[number],
                                           self.cell_carrier[number],

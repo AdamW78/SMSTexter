@@ -13,7 +13,7 @@ def read(file_data) -> dict:
     :return: Dictionary object created from contents of filename
     """
     if isinstance(file_data, str):
-        with open(file_data, 'r', 'UTF-8') as dictfile:
+        with open(file_data, 'r', encoding='UTF-8') as dictfile:
             return read(dictfile)
     # Create empty dictionary to append and return
     carrier_dictionary = {}
