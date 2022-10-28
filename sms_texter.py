@@ -52,8 +52,11 @@ class SMSTexter:
         """
         # Set object variables
         self.carrier_dictionary = carrier_dict_loader.carrier_dictionary()
+        print("Cell Carrier Dictionary Contents:\n", self.carrier_dictionary)
         self.multi = isinstance(phone_number, list)
+        print("Using more than one phone number:", self.multi)
         self.phone_number = phone_number
+        print("Phone Number:", self.phone_number)
         # Check if supplied with using multiple phone numbers
         if self.multi:
             # If true, create an empty list object, carrier_list, to fill with cell carrier strings

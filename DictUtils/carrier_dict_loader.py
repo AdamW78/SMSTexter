@@ -17,13 +17,14 @@ def fetch_carrier_dictionary() -> dict:
     #
     for i in range(len(lines)):
         lines[i] = str(lines[i])
-    with open('carrier-dict.csv', 'w') as csvfile:
+    dict_patch = constants.LOCAL_DICT_PATCH
+    with open(dict_patch, 'w') as csvfile:
         writer = csv.writer(csvfile, delimiter=",")
         for line in lines:
             line = line[2:len(line)-1]
             write_list = line.split(',')
             writer.writerow(write_list)
-    return fetch_carrier_dictionary_local()
+    return dict_reader.read(dict_patch)
 
 
 def carrier_dictionary():

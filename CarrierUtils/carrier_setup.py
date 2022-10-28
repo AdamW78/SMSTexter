@@ -13,6 +13,7 @@ def __search_carriers(phone_number: str, carrier_dictionary: dict) -> str or lis
     # Perform cell carrier lookup for inputted phone_number from find_cell_carriers.find() method
     # Store in user_carrier
     user_carrier = find_cell_carrier.get_carrier(phone_number)
+    print(f"Performed cell carrier lookup for {phone_number} and found {user_carrier}!")
     # Fetches all keys from carrier_dictionary object
     keys = list(carrier_dictionary.keys())
     # Close matches is returned in more than one case - instantiate it to empty list here
