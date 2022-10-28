@@ -1,3 +1,6 @@
+"""
+Module used to check if a file is a csv dictionary
+"""
 from os import listdir
 from os.path import isfile
 from csv import reader
@@ -11,15 +14,11 @@ def is_csv_dict(filename) -> bool:
     :return: boolean for whether file is a csv dictionary
     """
     if filename.endswith("csv"):
-        with open(filename, newline='\n') as csvfile:
-
+        with open(filename, 'r', encoding='UTF-8') as csvfile:
             csv_reader = reader(csvfile)
             csv_file_list = list(csv_reader)
             headers = csv_file_list[0]
-            if 'Cell Carrier' in headers:
-                return True
-            else:
-                return False
+            return 'Cell Carrier' in headers
 
 
 def has_csv_dict() -> str:
@@ -28,8 +27,8 @@ def has_csv_dict() -> str:
 
     :return: string file where carrrier-dict.csv is found
     """
-    files = [f for f in listdir('DictUtils') if isfile(f)]
-    for f in files:
-        if is_csv_dict("DictUtils/" + f):
-            return "DictUtils/" + f
+    files = [file for file in listdir('DictUtils') if isfile(file)]
+    for file in files:
+        if is_csv_dict("DictUtils/" + file):
+            return "DictUtils/" + file
     return ""

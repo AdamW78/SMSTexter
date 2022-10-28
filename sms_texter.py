@@ -1,3 +1,7 @@
+"""
+Main module used for sending texts
+Contains SMSTexter class
+"""
 import smtplib
 import constants
 from DictUtils import carrier_dict_loader
@@ -5,13 +9,17 @@ from CarrierUtils import carrier_setup
 
 
 class SMSTexter:
+    """
+    Class used for automated sending of texts
+    """
     @staticmethod
-    def __text_to_email_send(phone_number: str, cell_carrier: str, carrier_dictionary: dict, server: smtplib.SMTP):
+    def __text_to_email_send(phone_number: str, cell_carrier: str,
+                             carrier_dictionary: dict, server: smtplib.SMTP):
         """
         Static helper method used for actually sending an SMS message
 
         :param server: SMTP object used to send email
-        :param carrier_dictionary: Dictionary containing cell carriers and their text-to-email addresses
+        :param carrier_dictionary: Dict containing cell carriers and their text-to-email addresses
         :param cell_carrier: String cell carrier to use to build text-to-email address
         :param phone_number: String phone number to which SMS message is sent
         """
@@ -81,8 +89,14 @@ class SMSTexter:
             # If true, iterate through every supplied phone number
             for number in range(len(self.phone_number)):
                 # Send text to phone number using helper method
-                self.__text_to_email_send(self.phone_number[number], self.cell_carrier[number], self.carrier_dictionary, self.__start_server())
+                self.__text_to_email_send(self.phone_number[number],
+                                          self.cell_carrier[number],
+                                          self.carrier_dictionary,
+                                          self.__start_server())
         # Using a single phone number
         else:
             # Send text to phone number using helper method
-            self.__text_to_email_send(self.phone_number, self.cell_carrier, self.carrier_dictionary, self.__start_server())
+            self.__text_to_email_send(self.phone_number,
+                                      self.cell_carrier,
+                                      self.carrier_dictionary,
+                                      self.__start_server())
