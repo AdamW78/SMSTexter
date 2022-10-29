@@ -16,7 +16,7 @@ def write(dictionary):
     # CSV Column Headers to Use
     csv_columns = ["Cell Carrier", "Email 1", "Email 2", "Email 3", "Email 4", "Email 5", "Email 6"]
     # Path to CSV file
-    csv_file = constants.LOCAL_DICT_PATCH
+    csv_file = constants.LOCAL_DICT_PATH
     with open(csv_file, 'w', encoding='UTF-8') as csvfile:
         # Create CSV Writer object
         writer = csv.writer(csvfile)

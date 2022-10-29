@@ -29,4 +29,4 @@ def has_csv_dict() -> bool:
 
     :return: boolean for whether a local dict file has already been created
     """
-    return exists(constants.LOCAL_DICT_PATCH)
+    return exists(constants.LOCAL_DICT_PATH)
