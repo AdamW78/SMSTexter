@@ -1,9 +1,10 @@
 """
 Module used to check if a file is a csv dictionary
 """
-from os import listdir
-from os.path import isfile
+
 from csv import reader
+from os.path import exists
+import constants
 
 
 def is_csv_dict(filename) -> bool:
@@ -22,14 +23,10 @@ def is_csv_dict(filename) -> bool:
     return False
 
 
-def has_csv_dict() -> str:
+def has_csv_dict() -> bool:
     """
     Checks whether user has already written a CSV file from cell carrier dictionary
 
-    :return: string file where carrrier-dict.csv is found
+    :return: boolean for whether a local dict file has already been created
     """
-    files = [file for file in listdir('DictUtils') if isfile(file)]
-    for file in files:
-        if is_csv_dict("DictUtils/" + file):
-            return "DictUtils/" + file
-    return ""
+    return exists(constants.LOCAL_DICT_PATCH)

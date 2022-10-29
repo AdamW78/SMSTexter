@@ -14,7 +14,7 @@ def get_carrier(number):
     :return: String cell carrier found either locally or using Twilio API
     """
     # Check if String number is cached locally
-    cache_result = cache_cell_carrier.is_cached(number)
+    cache_result = cache_carrier.is_cached(number)
     # Check if the cache lookup result is a string
     if isinstance(cache_result, str):
         # It is a string, found cell carrier locally, return cell carrier string
@@ -30,7 +30,7 @@ def get_carrier(number):
         .fetch(type=['carrier'])
     cell_carrier = phone_number.carrier['name']
     # Cache cell carrier Twilio returns locally in JSON file
-    cache_cell_carrier.cache(number, cell_carrier)
+    cache_carrier.cache(number, cell_carrier)
     if constants.DEBUG:
         print(f"Received response from Twilio for {number} - Carrier: {cell_carrier}")
     # Return the cell carrier found by the Twilio API

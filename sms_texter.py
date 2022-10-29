@@ -66,7 +66,7 @@ class SMSTexter:
         # Fetch CSV file containing cell carriers and their text-to-email
         # addresses. Convert the CSV file into a dictionary containing string
         # cell carriers and lists of string text-to-email addresses
-        self.carrier_dictionary = carrier_dict_loader.carrier_dictionary()
+        self.carrier_dictionary = dict_loader.carrier_dictionary()
         # Determine whether phone number string or path string to file was supplied
         # If a phone number, multi is False
         # If a path to a file, multi is true
