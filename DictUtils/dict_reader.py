@@ -33,7 +33,7 @@ def read(file_data) -> dict:
             if line[index] == '':
                 line.pop(index)
             index -= 1
-        if constants.DEBUG:
+        if constants.DEBUG_HARD:
             print(f"Adding cell carrier: {cell_carrier} with email list {line}!")
         # Update dict object to include value cell_carrier for key phone_number
         carrier_dictionary[cell_carrier] = line
