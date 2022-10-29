@@ -6,7 +6,7 @@ import smtplib
 from os.path import exists
 
 import constants
-from DictUtils import carrier_dict_loader
+from DictUtils import dict_loader
 from CarrierUtils import carrier_setup
 from GUITools.NumberInput import number_reader
 

@@ -4,7 +4,7 @@ Used to obtain the correct cell carrier information for a given cell phone numbe
 import difflib
 import sys
 from time import sleep
-from CarrierUtils import find_cell_carrier
+from CarrierUtils import find_carrier
 
 
 def __search_carriers(phone_number: str, carrier_dictionary: dict) -> str or list:

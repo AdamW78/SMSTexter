@@ -3,7 +3,7 @@ Uses either Twilio API or locally cached cell carrier value to return cell carri
 """
 from twilio.rest import Client
 import constants
-from Cache import cache_cell_carrier
+from CarrierUtils import cache_carrier
 
 
 def get_carrier(number):
