@@ -101,6 +101,24 @@ class SMSTexter:
         if constants.DEBUG_HARD:
             print("Cell Carrier Dictionary Contents:\n", self.carrier_dictionary)
 
+    @property
+    def phone_number(self):
+        """
+        Getter method for phone number string/list
+
+        :return: phone_number string/list
+        """
+        return self.phone_number
+
+    def phone_number(self, number: str):
+        """
+        Setter
+
+        :param number:
+        :return:
+        """
+        self.phone_number = number
+
     def send_message(self):
         """
         Main method for class, calls helper method that actually sends text message

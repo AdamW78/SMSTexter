@@ -15,10 +15,11 @@ def __fetch_carrier_dictionary() -> dict:
 
     :return: Dictionary file newly-stored locally
     """
+    resource_path = constants.RESOURCES_PATH
     # Check if Cache directory exists or not
-    if not exists(os.getcwd()+"/Documents/SMS Texter/"):
+    if not exists(resource_path):
         # Cache directory does not exist, create it
-        print(os.mkdir(os.getcwd()+"/Documents/SMS Texter/"))
+        os.mkdir(resource_path)
     return __fetch_remote_dict()
 
 
