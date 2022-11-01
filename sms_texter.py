@@ -70,11 +70,12 @@ class SMSTexter:
         # Determine whether phone number string or path string to file was supplied
         # If a phone number, multi is False
         # If a path to a file, multi is true
-        self.multi = exists('/' + phone_number)
+        self.multi = isinstance(phone_number, list)
+        self.phone_number = phone_number
         # Supplied with path to file
         if self.multi:
             # Update path string to be an absolute path rather than a relative one
-            phone_number = '/' + phone_number
+            # phone_number = '/' + phone_number
             # If true, create an empty list object, carrier_list, to fill with cell carrier strings
             carrier_list = []
             # Replace string in self.phone_number with list object returned by number_reader
@@ -82,7 +83,7 @@ class SMSTexter:
             # Otherwise, raises exception
             # Additionally verifies line-by-line that each string is a number
             # and exactly 10 characters long
-            self.phone_number = number_reader.read(phone_number)
+            # self.phone_number = number_reader.read(phone_number)
             # Iterate through every provided phone number
             for number in self.phone_number:
                 # Add the cell carrier string from each phone number to carrier_list
@@ -94,7 +95,6 @@ class SMSTexter:
         # Supplied with single number
         else:
             # Set cell_carrier object variable to cell carrier string for phone_number
-            self.phone_number = phone_number
             self.cell_carrier = carrier_setup.setup(phone_number, self.carrier_dictionary)
         if constants.DEBUG:
             print("Phone Number:", self.phone_number)
