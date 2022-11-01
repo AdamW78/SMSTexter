@@ -5,56 +5,41 @@ from GUITools.NumberInput.drag_line_edit import DragLineEdit
 from GUITools.NumberInput.multi_num_widget import MultiNumWidget
 
 
-class LeftInputWidget(QtWidgets.QWidget):
+class LeftInputWidget(QtWidgets.QGroupBox):
 
-    def __init__(self):
+    def __init__(self, output_widget: QtWidgets.QLabel):
         # Call parent constructor
-        super(LeftInputWidget, self).__init__()
+        super(LeftInputWidget, self).__init__("Recipient")
         """
         Method called on instantiation
         Adds everything to layout
         """
+        self.output_label = output_widget
         self.layout = QtWidgets.QGridLayout(self)
         # Set up variables to check if texting one or more phone numbers
         self.mode = 0
         # Radio button setup
-        self.radio_buttons = self.radio_button_setup()
         # Phone number input setup
-        self.input_number = QtWidgets.QLineEdit()
-        self.input_number.textChanged[str].connect(self.onChanged)
-        self.input_number.setPlaceholderText("Enter phone number.")
+        self.radio_buttons = self.radio_button_setup()
+        self.layout.addWidget(self.radio_buttons[0], 0, 0)
+        self.layout.addWidget(self.radio_buttons[1], 0, 1)
         # File input setup
         # self.input_file = MultiNumWidget()
         # self.input_file.hide()
+        self.input_number = QtWidgets.QLineEdit()
+        self.input_number.setPlaceholderText("Enter phone number...")
+        self.input_number.textChanged[str].connect(self.onChanged)
         self.file_dialog = QtWidgets.QFileDialog()
         self.numbers_path_edit = DragLineEdit()
         self.browse_button = QtWidgets.QPushButton("Browse...")
         self.browse_button.clicked.connect(self.open_file_dialog)
         self.numbers_path_edit.hide()
         self.browse_button.hide()
-        self.layout.addWidget(self.numbers_path_edit, 1, 0)
-        self.layout.addWidget(self.browse_button, 2, 0)
+        self.layout.addWidget(self.numbers_path_edit, 1, 0, 1, 2)
+        self.layout.addWidget(self.browse_button, 2, 0, 1, 2)
         # Add widgets to layout
-        self.layout.addWidget(self.radio_buttons, 0, 0)
-        self.layout.addWidget(self.input_number, 1, 0)
-        #self.layout.addWidget(self.input_file, 1, 0)
-
-    def radio_button_setup(self):
-        """
-        Method for set up of radio buttons in main window
-        :return:
-        """
-        # Create radio buttons widget
-        radio_buttons = QtWidgets.QWidget(self)
-        radio_buttons.layout = QtWidgets.QHBoxLayout(radio_buttons)
-        radio_button_1 = QtWidgets.QRadioButton("Single number")
-        radio_button_1.setChecked(True)
-        radio_button_2 = QtWidgets.QRadioButton("Multiple numbers")
-        radio_button_1.toggled.connect(self.rb1_toggle)
-        radio_button_2.toggled.connect(self.rb2_toggle)
-        radio_buttons.layout.addWidget(radio_button_1, 0)
-        radio_buttons.layout.addWidget(radio_button_2, 1)
-        return radio_buttons
+        self.layout.addWidget(self.input_number, 1, 0, 1, 2)
+        # self.layout.addWidget(self.input_file, 1, 0)
 
     @QtCore.Slot()
     def open_file_dialog(self):
@@ -76,6 +61,7 @@ class LeftInputWidget(QtWidgets.QWidget):
         self.input_number.show()
         self.numbers_path_edit.hide()
         self.browse_button.hide()
+        self.output_label.setText("Switched to single-number mode!")
 
     @QtCore.Slot()
     def rb2_toggle(self):
@@ -88,6 +74,7 @@ class LeftInputWidget(QtWidgets.QWidget):
         self.numbers_path_edit.show()
         self.browse_button.show()
         self.input_number.hide()
+        self.output_label.setText("Switched to multi-number mode!")
 
     @QtCore.Slot()
     def get_cur_mode(self):
@@ -128,3 +115,19 @@ class LeftInputWidget(QtWidgets.QWidget):
         if self.mode == 0:
             return constants.PHONE_NUMBER
         return constants.PHONE_NUMBERS_PATH
+
+    def radio_button_setup(self):
+        """
+        Method for set up of radio buttons in main window
+        :return:
+        """
+        # Create radio buttons widget
+        radio_buttons = []
+        radio_button_1 = QtWidgets.QRadioButton("Single Number")
+        radio_button_1.setChecked(True)
+        radio_button_2 = QtWidgets.QRadioButton("Multiple Numbers")
+        radio_button_1.toggled.connect(self.rb1_toggle)
+        radio_button_2.toggled.connect(self.rb2_toggle)
+        radio_buttons.append(radio_button_1)
+        radio_buttons.append(radio_button_2)
+        return radio_buttons
