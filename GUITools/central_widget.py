@@ -2,6 +2,7 @@
 Main window module for texting GUI
 """
 from PySide6 import QtCore, QtWidgets
+from PySide6.QtWidgets import QVBoxLayout
 from schedule import every, cancel_job
 
 import constants
@@ -28,6 +29,8 @@ class SMSTexterWidget(QtWidgets.QWidget):
         self.button = QtWidgets.QPushButton("Click to send automated text")
         self.status_output = QtWidgets.QLabel("Waiting to send text...")
         self.radio_buttons_1 = LeftInputWidget(self.status_output)
+        self.variables = QtWidgets.QGroupBox("Variables")
+        self.variables.setLayout(QVBoxLayout(self.variables))
         # Create main layout object
         self.layout = QtWidgets.QGridLayout(self)
         # Create widget used for obtaining target phone number input
@@ -36,11 +39,14 @@ class SMSTexterWidget(QtWidgets.QWidget):
         # Create fields to be used when texts are sent for memory re-usage
         self.sms_texter_single = None
         self.sms_texter_multi = None
-        self.text_input = TextMessageInput()
+        self.text_input = TextMessageInput(self.status_output, self.variables)
+        if self.text_input.get_num_vars == 0:
+            self.variables.hide()
         # Add widgets to layout
-        self.layout.addWidget(self.button, 2, 1)
+        self.layout.addWidget(self.button, 3, 1)
         self.layout.addWidget(self.text_input, 1, 1)
-        self.layout.addWidget(self.status_output, 2, 0)
+        self.layout.addWidget(self.variables, 2, 1)
+        self.layout.addWidget(self.status_output, 3, 0)
         self.layout.addWidget(self.radio_buttons_1, 0, 0, 2, 1)
         self.layout.addWidget(self.radio_buttons_2, 0, 1)
         self.status_output.setGeometry(100, 100, 100, 100)
@@ -52,18 +58,35 @@ class SMSTexterWidget(QtWidgets.QWidget):
 
         :return:
         """
+        phone_number = constants.PHONE_NUMBER
+        message = constants.MESSAGE
+        if self.status_output.text() == "Warning: unmatched \"{\" or \"}\"!" \
+                or self.status_output.text() == "Error: Unmatched \"{\" or \"}\"! Text not sent!":
+            self.status_output.setText("Error: Unmatched \"{\" or \"}\"! Text not sent!")
+            return
+
+        # Get mode from radio_buttons_1 QGroupBox - Single-number or multi-number
         mode = self.radio_buttons_1.get_cur_mode()
-        # Check if radio button 1 is checked
+        # Check if send text using Twilio radio button is enabled
         if self.text_mode == 1:
+            # Sending text to single number using Twilio phone number as sender
             if mode == 0:
-                self.status_output.setText("Sending text to one phone number: "
-                                           + constants.PHONE_NUMBER + "...")
-                create_message.text(constants.PHONE_NUMBER, constants.MESSAGE)
-                self.status_output.setText("Text sent successfully to "+constants.PHONE_NUMBER+"!")
+                self.send_text_twilio(phone_number, message)
+            # SEnding text to multiple numbers using Twilio phone number as sender
             else:
                 self.status_output.setText("Texting all numbers listed in supplied file...")
                 for num in number_reader.read(constants.PHONE_NUMBERS_PATH):
-                    create_message.text(num, constants.MESSAGE)
+                    if len(num) == 1:
+                        self.send_text_twilio(num[0], message)
+                    # Fetch message from constant
+                    else:
+                        user_vars = []
+                        for i in range(len(num)):
+                            i = int(i)
+                            if i == 0:
+                                continue
+                            user_vars.append(num[i])
+                        self.send_text_twilio(num[0], self.format_message(message, user_vars))
         elif mode == 0:
             self.status_output.setText("Sending text to one phone number: "
                                        + constants.PHONE_NUMBER + "...")
@@ -91,6 +114,12 @@ class SMSTexterWidget(QtWidgets.QWidget):
             self.sms_texter_multi.send_message()
             self.status_output.setText("Text sent successfully to all numbers in supplied file!")
 
+    def send_text_twilio(self, phone_number: str, text: str):
+        self.status_output.setText("Sending text to one phone number: "
+                                   + constants.PHONE_NUMBER + "...")
+        create_message.text(phone_number, text)
+        self.status_output.setText("Text sent successfully to " + constants.PHONE_NUMBER + "!")
+
     def radio_button_setup(self, button_1: str, button_2: str):
         """
         Method for set up of radio buttons in main window
@@ -108,6 +137,21 @@ class SMSTexterWidget(QtWidgets.QWidget):
         radio_buttons.layout.addWidget(radio_button_2, 1)
         return radio_buttons
 
+    @staticmethod
+    def format_message(message: str, user_vars: list) -> str:
+        """
+        Message used for properly formatting text message with variable
+        :param user_vars:
+        :param message:
+        :return:
+        """
+        for var in user_vars:
+            if message.find("{") != -1:
+                split_one = message.split("{", 1)
+                split_two = split_one[1].split("}", 1)
+                message = split_one[0] + var + split_two[1]
+        return message
+
     @QtCore.Slot()
     def set_mode_1(self):
         self.text_mode = 0
@@ -117,4 +161,3 @@ class SMSTexterWidget(QtWidgets.QWidget):
     def set_mode_2(self):
         self.text_mode = 1
         self.status_output.setText("Switched to phone number mode!")
-

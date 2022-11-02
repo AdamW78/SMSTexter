@@ -2,7 +2,6 @@ from PySide6 import QtCore, QtWidgets
 
 import constants
 from GUITools.NumberInput.drag_line_edit import DragLineEdit
-from GUITools.NumberInput.multi_num_widget import MultiNumWidget
 
 
 class LeftInputWidget(QtWidgets.QGroupBox):

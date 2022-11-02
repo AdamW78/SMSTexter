@@ -11,6 +11,21 @@ from CarrierUtils import carrier_setup
 from GUITools.NumberInput import number_reader
 
 
+def format_message(message: str, user_vars: list) -> str:
+    """
+    Message used for properly formatting text message with variable
+    :param user_vars:
+    :param message:
+    :return:
+    """
+    for var in user_vars:
+        if message.find("{") != -1:
+            split_one = message.split("{", 1)
+            split_two = split_one[1].split("}", 1)
+            message = split_one[0] + var + split_two[1]
+    return message
+
+
 class SMSTexter:
     """
     Class used for automated sending of texts
@@ -18,7 +33,7 @@ class SMSTexter:
 
     @staticmethod
     def __text_to_email_send(phone_number: str, cell_carrier: str,
-                             carrier_dictionary: dict, server: smtplib.SMTP):
+                             carrier_dictionary: dict, server: smtplib.SMTP, message: str):
         """
         Static helper method used for actually sending an SMS message
 
@@ -37,7 +52,7 @@ class SMSTexter:
         else:
             try:
                 # Send SMS text and print success messages
-                server.sendmail(constants.EMAIL, recipient, constants.MESSAGE)
+                server.sendmail(constants.EMAIL, recipient, message)
                 SMSTexter.__success_message(cell_carrier, recipient)
             except smtplib.SMTPRecipientsRefused:
                 print("Error: Could not send to that address")
@@ -71,7 +86,6 @@ class SMSTexter:
         # If a phone number, multi is False
         # If a path to a file, multi is true
         self.multi = isinstance(phone_number, list)
-        self.phone_number = phone_number
         # Supplied with path to file
         if self.multi:
             # Update path string to be an absolute path rather than a relative one
@@ -85,15 +99,22 @@ class SMSTexter:
             # and exactly 10 characters long
             # self.phone_number = number_reader.read(phone_number)
             # Iterate through every provided phone number
-            for number in self.phone_number:
+            self.user_vars = []
+            number_list = []
+            for number in phone_number:
+                number_list.append(number[0])
                 # Add the cell carrier string from each phone number to carrier_list
-                carrier_list.append(carrier_setup.setup(number, self.carrier_dictionary))
+                carrier_list.append(carrier_setup.setup(number.pop(0), self.carrier_dictionary))
+                if number.__ne__([]):
+                    self.user_vars = number
             # Set cell_carrier object variable to carrier_list filled with cell carrier strings
+            self.phone_number = number_list
             self.cell_carrier = carrier_list
             if constants.DEBUG:
                 print("Using more than one phone number - ready to send multiple messages...")
         # Supplied with single number
         else:
+            self.phone_number = phone_number
             # Set cell_carrier object variable to cell carrier string for phone_number
             self.cell_carrier = carrier_setup.setup(phone_number, self.carrier_dictionary)
         if constants.DEBUG:
@@ -127,15 +148,18 @@ class SMSTexter:
         if self.multi:
             # If true, iterate through every supplied phone number
             for number in range(len(self.phone_number)):
+                message = constants.MESSAGE
+                if self.user_vars.__ne__([]):
+                    message = format_message(message, self.user_vars)
                 # Send text to phone number using helper method
                 self.__text_to_email_send(self.phone_number[number],
                                           self.cell_carrier[number],
                                           self.carrier_dictionary,
-                                          self.__start_server())
+                                          self.__start_server(), message)
         # Using a single phone number
         else:
             # Send text to phone number using helper method
             self.__text_to_email_send(self.phone_number,
                                       self.cell_carrier,
                                       self.carrier_dictionary,
-                                      self.__start_server())
+                                      self.__start_server(), constants.MESSAGE)
