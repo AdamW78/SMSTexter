@@ -106,7 +106,7 @@ class SMSTexterWidget(QtWidgets.QWidget):
             # Check if we have NOT already instantiated a multi-number SMSTexter object
             # OR if the multi-number SMSTexter that already exists is out-of-date
             num_list = number_reader.read(constants.PHONE_NUMBERS_PATH)
-            if self.sms_texter_multi is None or self.sms_texter_multi.phone_number() == num_list:
+            if self.sms_texter_multi is None or self.sms_texter_multi.phone_number == num_list:
                 # We have not created a multi-number SMSTexter or it is out-of-date
                 # Update field with new one now
                 self.sms_texter_multi = SMSTexter(num_list)
