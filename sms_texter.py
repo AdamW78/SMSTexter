@@ -48,12 +48,12 @@ class SMSTexter:
         if constants.DRY_RUN:
             # Print success messages
             print("DRY RUN COMPLETED - NO TEXT MESSAGE SENT!")
-            SMSTexter.__success_message(cell_carrier, recipient)
+            SMSTexter.__success_message(cell_carrier, recipient, message)
         else:
             try:
                 # Send SMS text and print success messages
                 server.sendmail(constants.EMAIL, recipient, message)
-                SMSTexter.__success_message(cell_carrier, recipient)
+                SMSTexter.__success_message(cell_carrier, recipient, message)
             except smtplib.SMTPRecipientsRefused:
                 print("Error: Could not send to that address")
 
@@ -66,8 +66,9 @@ class SMSTexter:
         return server
 
     @staticmethod
-    def __success_message(cell_carrier: str, recipient: str):
+    def __success_message(cell_carrier: str, recipient: str, message: str):
         print(f"Using Cell Carrier info for Carrier: {cell_carrier}")
+        print(f"Message would have been:", message)
         print(f"Recipient Mail Address: {recipient}")
         print("SUCCESS!")
 
@@ -99,14 +100,14 @@ class SMSTexter:
             # and exactly 10 characters long
             # self.phone_number = number_reader.read(phone_number)
             # Iterate through every provided phone number
-            self.user_vars = []
+            self.user_vars_list = []
             number_list = []
             for number in phone_number:
                 number_list.append(number[0])
                 # Add the cell carrier string from each phone number to carrier_list
                 carrier_list.append(carrier_setup.setup(number.pop(0), self.carrier_dictionary))
                 if number.__ne__([]):
-                    self.user_vars = number
+                    self.user_vars_list.append(number)
             # Set cell_carrier object variable to carrier_list filled with cell carrier strings
             self.phone_number = number_list
             self.cell_carrier = carrier_list
@@ -149,8 +150,8 @@ class SMSTexter:
             # If true, iterate through every supplied phone number
             for number in range(len(self.phone_number)):
                 message = constants.MESSAGE
-                if self.user_vars.__ne__([]):
-                    message = format_message(message, self.user_vars)
+                if self.user_vars_list.__ne__([]):
+                    message = format_message(message, self.user_vars_list[number])
                 # Send text to phone number using helper method
                 self.__text_to_email_send(self.phone_number[number],
                                           self.cell_carrier[number],
