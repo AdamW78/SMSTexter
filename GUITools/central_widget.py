@@ -71,14 +71,28 @@ class SMSTexterWidget(QtWidgets.QWidget):
         if self.text_mode == 1:
             # Sending text to single number using Twilio phone number as sender
             if mode == 0:
-                self.send_text_twilio(phone_number, message)
-            # SEnding text to multiple numbers using Twilio phone number as sender
+                if constants.DRY_RUN:
+                    print("DRY RUN COMPLETE - NO TEXT SENT")
+                    print(f"Text would have been sent to: {phone_number}")
+                    print(f"Message would have been: {message}")
+                else:
+                    self.send_text_twilio(phone_number, message)
+            # Sending text to multiple numbers using Twilio phone number as sender
             else:
+                # Update status_output QLabel
                 self.status_output.setText("Texting all numbers listed in supplied file...")
+                # Iterate through each phone number returned by number_reader.read()
                 for num in number_reader.read(constants.PHONE_NUMBERS_PATH):
+                    # If the length of the list returned by number_reader_read() is 1
+                    # This means we have no supplied variables to fill in text
                     if len(num) == 1:
-                        self.send_text_twilio(num[0], message)
-                    # Fetch message from constant
+                        if constants.DRY_RUN:
+                            print("DRY RUN SUCCESSFUL - NO TEXT MESSAGE SENT!")
+                            print("Recipient would have been:", num[0])
+                            print("Message would have been:", message)
+                        else:
+                            self.send_text_twilio(num[0], message)
+                    # The length of the list returned by number_reader.read() is GREATER than one
                     else:
                         user_vars = []
                         for i in range(len(num)):
@@ -86,7 +100,14 @@ class SMSTexterWidget(QtWidgets.QWidget):
                             if i == 0:
                                 continue
                             user_vars.append(num[i])
-                        self.send_text_twilio(num[0], self.format_message(message, user_vars))
+                        if constants.DRY_RUN:
+                            print("DRY RUN SUCCESSFUL - NO TEXT MESSAGE SENT!")
+                            print("Recipient would have been:", num[0])
+                            print("Supplied with full list num:", num)
+                            print("Supplied with user_vars:", user_vars)
+                            print("Message would have been:", self.format_message(message, user_vars))
+                        else:
+                            self.send_text_twilio(num[0], self.format_message(message, user_vars))
         elif mode == 0:
             self.status_output.setText("Sending text to one phone number: "
                                        + constants.PHONE_NUMBER + "...")
